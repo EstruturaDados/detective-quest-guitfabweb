@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 
 // Desafio Detective Quest
 // Tema 4 - Árvores e Tabela Hash
@@ -41,6 +41,114 @@ int main() {
     // - Para hashing simples, pode usar soma dos valores ASCII do nome ou primeira letra.
     // - Em caso de colisão, use lista encadeada para tratar.
     // - Modularize com funções como inicializarHash(), buscarSuspeito(), listarAssociacoes().
+
+    return 0;
+}
+*/
+
+// ============================================================================
+// PROJETO: Detective Quest - Nível Novato
+// Autor: Fabrício Vieira de Souza
+// Data: 29/11/2025
+// Objeteto: Navegação da mansão usando árvore binária
+// https://github.com/EstruturaDados/detective-quest-guitfabweb
+// ============================================================================
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Struct que representa uma sala da mansão
+typedef struct Sala
+{
+    char nome[50];
+    struct Sala *esquerda;
+    struct Sala *direita;
+} Sala;
+
+// ---------------------------------------------------------------------------
+// Cria dinamicamente uma sala com nome
+Sala *criarSala(const char *nome)
+{
+    Sala *nova = (Sala *)malloc(sizeof(Sala));
+    if (nova == NULL)
+    {
+        printf("Erro ao alocar memória!\n");
+        exit(1);
+    }
+    strcpy(nova->nome, nome);
+    nova->esquerda = NULL;
+    nova->direita = NULL;
+    return nova;
+}
+
+// ---------------------------------------------------------------------------
+// Permite ao jogador explorar as salas da mansão
+void explorarSalas(Sala *atual)
+{
+    char escolha;
+
+    while (atual != NULL)
+    {
+        printf("\nVocê está em: %s\n", atual->nome);
+
+        // Se a sala não tem mais caminhos, acabou
+        if (atual->esquerda == NULL && atual->direita == NULL)
+        {
+            printf("Fim do caminho! Esta sala não possui mais saídas.\n");
+            return;
+        }
+
+        printf("Escolha seu caminho:\n");
+        if (atual->esquerda != NULL)
+            printf(" [e] Ir para a esquerda (%s)\n", atual->esquerda->nome);
+        if (atual->direita != NULL)
+            printf(" [d] Ir para a direita (%s)\n", atual->direita->nome);
+        printf(" [s] Sair da exploração\n");
+        printf("-> ");
+
+        scanf(" %c", &escolha);
+
+        if (escolha == 'e' && atual->esquerda != NULL)
+        {
+            atual = atual->esquerda;
+        }
+        else if (escolha == 'd' && atual->direita != NULL)
+        {
+            atual = atual->direita;
+        }
+        else if (escolha == 's')
+        {
+            printf("Exploração encerrada.\n");
+            return;
+        }
+        else
+        {
+            printf("Opção inválida! Tente novamente.\n");
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Função principal: monta a árvore e inicia a exploração
+int main()
+{
+    // Montagem fixa da mansão (árvore binária)
+    Sala *hall = criarSala("Hall de Entrada");
+    Sala *salaEstar = criarSala("Sala de Estar");
+    Sala *biblioteca = criarSala("Biblioteca");
+    Sala *cozinha = criarSala("Cozinha");
+    Sala *jardim = criarSala("Jardim");
+
+    // Estrutura da árvore
+    hall->esquerda = salaEstar;
+    hall->direita = biblioteca;
+
+    salaEstar->esquerda = cozinha;
+    salaEstar->direita = jardim;
+
+    // Início da exploração
+    explorarSalas(hall);
 
     return 0;
 }
